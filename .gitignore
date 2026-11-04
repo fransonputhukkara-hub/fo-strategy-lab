@@ -1,0 +1,53 @@
+
+# Python virtual environments
+.venv/
+kotak_test_env/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*credentials*
+*secret*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Broker downloaded market data
+nse_fo.csv
+*.csv
+
+# Python cache and test files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs and temporary files
+*.log
+*.tmp
+logs/
+temp/
+
+# Node.js dependencies and builds
+node_modules/
+dist/
+build/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Local databases and backups
+*.db
+*.sqlite
+*.sqlite3
+*.bak
