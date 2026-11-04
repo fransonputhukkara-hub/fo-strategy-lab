@@ -1,22 +1,14 @@
 <!doctype html>
-<html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>F&O Strategy Lab — Full</title>
-<style>
-body{margin:0;background:#080d18;color:#eef2ff;font:15px system-ui}
-main{max-width:780px;margin:auto;padding:16px}.hero{padding:10px 0}
-.card{background:#121a2b;border:1px solid #293653;border-radius:18px;padding:16px;margin:12px 0}
-.pill{display:inline-block;padding:6px 10px;border-radius:20px;background:#173d2a;color:#91f2ba}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-input,textarea,button{width:100%;box-sizing:border-box;padding:12px;margin-top:8px;border-radius:10px;border:1px solid #394866;background:#0c1424;color:#fff}
-button{background:#29447f;font-weight:700}pre{white-space:pre-wrap;word-break:break-word}
-.muted{color:#9aa7c2}.danger{color:#ffb2b2}@media(max-width:520px){.grid{grid-template-columns:1fr}}
-</style></head><body><main>
-<div class=hero><h1>F&O Strategy Lab</h1><span class=pill>FULL BUILD · RESEARCH / PAPER ONLY</span></div>
-<div class=card><h2>₹5,000 Paper Account</h2><div class=grid><div>Starting capital<br><b>₹5,000</b></div><div>Live trading<br><b>LOCKED</b></div><div>Daily loss limit<br><b>₹100</b></div><div>Max trade risk<br><b>₹50</b></div></div></div>
-<div class=card><h2>Paper trade calculator</h2><div class=grid><input id=g value=100 placeholder="Gross P&L"><input id=s value=1000 placeholder="Sell turnover"><input id=b value=1000 placeholder="Buy turnover"></div><button onclick=paper()>Calculate net P&L</button><pre id=out></pre></div>
-<div class=card><h2>Research gates</h2><p class=muted>Development → Test → untouched Holdout. The system may return REJECT.</p><button onclick=health()>Run safety check</button><pre id=healthout></pre></div>
-<div class=card><h2>Pipeline</h2><p>Groww historical data → dynamic ATM/OTM selection → realistic execution costs → strategy discovery → walk-forward → final holdout → ₹5,000 paper trading.</p><p class=danger>NO live order endpoint is enabled in this build.</p></div>
-<script>
-async function paper(){let r=await fetch('/api/paper/trade',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({gross_pnl:+g.value,sell_value:+s.value,buy_value:+b.value})});out.textContent=JSON.stringify(await r.json(),null,2)}
-async function health(){let a=await fetch('/api/health');let b=await a.json();healthout.textContent=JSON.stringify(b,null,2)}
-</script></main></body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta name="description" content="F&O Strategy Lab — research and paper trading workspace." />
+    <title>F&O Strategy Lab</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

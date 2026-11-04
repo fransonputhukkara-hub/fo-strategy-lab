@@ -1,9 +1,9 @@
-
 import json
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from .portfolio import Portfolio
@@ -20,7 +20,9 @@ from .risk_model import portfolio_limits
 app = FastAPI(title="F&O Strategy Lab — Full Research")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-FRONTEND_FILE = BASE_DIR / "frontend" / "index.html"
+FRONTEND_DIR = BASE_DIR / "frontend"
+FRONTEND_DIST_DIR = FRONTEND_DIR / "dist"
+FRONTEND_FILE = FRONTEND_DIST_DIR / "index.html"
 DATA_DIR = (BASE_DIR / "data" / "processed").resolve()
 
 
@@ -30,15 +32,35 @@ DATA_DIR = (BASE_DIR / "data" / "processed").resolve()
 
 @app.get("/", include_in_schema=False)
 def dashboard():
-    if not FRONTEND_FILE.is_file():
-        raise HTTPException(
-            status_code=500,
-            detail="Dashboard HTML file is missing."
-        )
+    if FRONTEND_FILE.is_file():
+        return FileResponse(FRONTEND_FILE, media_type="text/html")
 
-    return FileResponse(
-        FRONTEND_FILE,
-        media_type="text/html"
+    return HTMLResponse(
+        """
+        <!doctype html>
+        <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>F&O Strategy Lab API</title>
+            <style>
+              body{margin:0;background:#090e1b;color:#edf1fa;font:15px system-ui;display:grid;min-height:100vh;place-items:center}
+              main{max-width:560px;margin:24px;padding:28px;background:#111a2c;border:1px solid #243149;border-radius:14px}
+              a{color:#a8caff}p{color:#9ba8bd;line-height:1.6}
+              code{color:#e4b978}
+            </style>
+          </head>
+          <body>
+            <main>
+              <h1>F&amp;O Strategy Lab backend is running</h1>
+              <p>The React dashboard is not built yet. During development, start the frontend with <code>npm run dev</code> and open:</p>
+              <p><a href="http://127.0.0.1:5173">http://127.0.0.1:5173</a></p>
+              <p>API documentation: <a href="/docs">/docs</a></p>
+            </main>
+          </body>
+        </html>
+        """,
+        status_code=200
     )
 
 
@@ -77,7 +99,7 @@ class ResearchReport(BaseModel):
 def health():
     return {
         "status": "ok",
-        "build": "FULL",
+        "build": "REACT_DASHBOARD_FOUNDATION",
         "live_trading": False,
         "mode": "RESEARCH_PAPER"
     }
@@ -211,4 +233,13 @@ def live_order():
     raise HTTPException(
         status_code=403,
         detail="Live trading is disabled. This research build permanently blocks live orders."
+    )
+
+
+# Serve the Vite production build after all API routes so /api/* is not shadowed.
+if FRONTEND_DIST_DIR.is_dir():
+    app.mount(
+        "/",
+        StaticFiles(directory=str(FRONTEND_DIST_DIR), html=True),
+        name="frontend"
     )
